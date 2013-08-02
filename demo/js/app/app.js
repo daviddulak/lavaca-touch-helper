@@ -1,6 +1,7 @@
 define(function(require) {
   var History = require('lavaca/net/History');
   var ExampleController = require('./net/ExampleController');
+  var HomeController = require('./net/HomeController');
   var Application = require('lavaca/mvc/Application');
   require('lavaca/ui/DustTemplate');
   require('jquery-mobile/events/touch');
@@ -18,7 +19,9 @@ define(function(require) {
    */
   var app = new Application(function() {
     this.router.add({
-      '/': [ExampleController, 'home']
+      '/': [HomeController, 'home'],
+      '/tracker': [ExampleController, 'tracker'],
+      '/drawer': [ExampleController, 'drawer']
     });
   });
 

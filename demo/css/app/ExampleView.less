@@ -2,12 +2,15 @@
   @top: 200px;
   #touch-track {
     display: block;
-    background: #5AA0DE;
+    background: @lavacaGold;
     width: 100%;
     height: @top;
     line-height: 200px;
     color: #fff;
     text-align: center;
+    font-family: 'OpenSans-CondLight';
+    text-transform: uppercase;
+    font-size: 24px;
   }
   .overflow-scroll {
     top: @top;
@@ -17,7 +20,7 @@
     width: 100%;
     #resultsHeading {
       .row {
-        background: #242528;
+        background: @lavacaDarkGrey;
         .col {
           color: #fff;
           font-size: 9px;
@@ -25,11 +28,13 @@
       }
     }
     .row {
+      color: @lavacaDarkGrey;
+      background: @lavacaBlueShade2;
       &.start {
-        background: #5AA0DE;
+        background: @lavacaBlueShade1;
       }
       &.end {
-        background: #ECBB42;
+        background: @lavacaBlueShade3;
       }
       .col {
         padding: 4px;
