@@ -1,10 +1,10 @@
-lavaca.mvc.CollectionView
+Lavaca Touch Helpers
 =========================
 
-Automagically render models in a collection as child views
+Touch Tracking Widgets for Lavaca
 
 ##Use
-Add `src/CollectionView.js` to your Lavaca project and enjoy.
+Add `src/TouchTrackerWidget.js` to your Lavaca project and enjoy.
 
 ##Run Demo
 The demo requires node and grunt
