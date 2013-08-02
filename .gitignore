@@ -1,0 +1,11 @@
+.DS_Store
+
+/node_modules
+/docs
+/doc
+/pkg
+/tmp
+/build
+/log
+
+.tern-port
