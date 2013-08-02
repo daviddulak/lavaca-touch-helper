@@ -1,5 +1,5 @@
 {
-  "name": "lavaca Touchtracker",
+  "name": "lavaca-touch-helper",
   "version": "0.1.0",
   "description": "Touchtracker Helpers",
   "main": "Gruntfile.js",
@@ -14,7 +14,7 @@
     "grunt-amd-test": "0.4.x",
     "grunt-amd-check": "0.5.x"
   },
-  "repository": "https://github.com/georgehenderson/lavaca.mvc.CollectionView.git",
+  "repository": "https://github.com/daviddulak/lavaca-touch-helper.git",
   "keywords": [
     "Lavaca",
     "mvc",
