@@ -4,7 +4,11 @@ Lavaca Touch Helpers
 Touch Tracking Widgets for Lavaca
 
 ##Use
-Add `src/TouchTrackerWidget.js` to your Lavaca project and enjoy.
+Add `src/TouchTrackerWidget.js` to your Lavaca project and use it as a building block.
+
+or
+
+Add `src/DrawerWidget.js` and `src/TouchTrackerWidget.js` to your project for a handy drawer navigation.
 
 ##Run Demo
 The demo requires node and grunt

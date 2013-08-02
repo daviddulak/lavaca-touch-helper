@@ -6,10 +6,10 @@ define(function(require) {
 
   var DrawerWidget = TouchTrackerWidget.extend(function() {
     TouchTrackerWidget.apply(this, arguments);
-    this.initWithParams();
+    this.init();
   }, {
 
-    initWithParams: function(params) {
+    init: function(params) {
       params = params || {};
       this.axisTracking = params.axisTracking || 'x';
       this.completionSpeed = params.completionSpeed || 0.1;

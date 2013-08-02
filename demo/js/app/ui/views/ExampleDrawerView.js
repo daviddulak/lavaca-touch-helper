@@ -7,10 +7,19 @@ define(function(require) {
 
   var ExampleDrawerView = BaseView.extend(function() {
     BaseView.apply(this, arguments);
-    this.mapWidget("#main-view", DrawerWidget);
+    this.mapEvent({
+      '.toggle-button': { tap: this.toggleDrawer.bind(this) }
+    });
+    this.on('entercomplete', this.onEnterComplete.bind(this));
   }, {
     template: 'templates/example-drawer',
-    className: 'example-drawer'
+    className: 'example-drawer',
+    onEnterComplete: function() {
+      this.drawerWidget = new DrawerWidget('#main-view');
+    },
+    toggleDrawer: function() {
+      this.drawerWidget.toggle();
+    }
   });
 
   return ExampleDrawerView;
