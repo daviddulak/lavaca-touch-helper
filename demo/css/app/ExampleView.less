@@ -1,11 +1,39 @@
 .view.example {
+  @top: 200px;
   #touch-track {
     display: block;
-    background: #A5C5D9;
+    background: #5AA0DE;
     width: 100%;
-    height: 200px;
+    height: @top;
     line-height: 200px;
     color: #fff;
     text-align: center;
+  }
+  .overflow-scroll {
+    top: @top;
+    height: auto;
+  }
+  #results {
+    width: 100%;
+    #resultsHeading {
+      .row {
+        background: #242528;
+        .col {
+          color: #fff;
+          font-size: 9px;
+        }
+      }
+    }
+    .row {
+      &.start {
+        background: #73C800;
+      }
+      &.end {
+        background: #DC3700;
+      }
+      .col {
+        padding: 4px;
+      }
+    }
   }
 }

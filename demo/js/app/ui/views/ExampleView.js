@@ -2,7 +2,7 @@ define(function(require) {
 
   var BaseView = require('./BaseView');
   var $ = require('jquery');
-  var DragToFromWidget = require('app/ui/widgets/DragToFromWidget');
+  var DemoTouchTrackerWidget = require('app/ui/widgets/DemoTouchTrackerWidget');
   require('rdust!templates/example');
 
   /**
@@ -12,7 +12,7 @@ define(function(require) {
    */
   var ExampleView = BaseView.extend(function() {
     BaseView.apply(this, arguments);
-    this.mapWidget("#touch-track", DragToFromWidget);
+    this.mapWidget("#touch-track", DemoTouchTrackerWidget);
   }, {
     /**
      * The name of the template used by the view

@@ -12,6 +12,7 @@ define(function(require) {
     touchTracker: {},
 
     onTouchStart: function(e) {
+      this.touchTracker.currentAction = 'start';
       this.touchTracker.startX = e.originalEvent.touches[0].clientX;
       this.touchTracker.startY = e.originalEvent.touches[0].clientY;
       this.touchTracker.lastX = e.originalEvent.touches[0].clientX;
@@ -22,6 +23,7 @@ define(function(require) {
       this.touchTracker.deltaY = 0;
     },
     onTouchMove: function(e) {
+      this.touchTracker.currentAction = 'move';
       this.touchTracker.currentDeltaX = e.originalEvent.touches[0].clientX - this.touchTracker.lastX;
       this.touchTracker.currentDeltaY = e.originalEvent.touches[0].clientY - this.touchTracker.lastY;
       this.touchTracker.lastX = e.originalEvent.touches[0].clientX;
@@ -30,10 +32,15 @@ define(function(require) {
       this.touchTracker.deltaY = e.originalEvent.touches[0].clientY - this.touchTracker.startY;
       this.touchTracker.distance = this.distanceBetweenPoints();
       this.touchTracker.angle = this.angleBetweenPoints();
+      this.touchTracker.distanceInt = this.touchTracker.distance.toFixed(0);
+      this.touchTracker.angleInt = this.touchTracker.angle.toFixed(0);
     },
     onTouchEnd: function(e) {
+      this.touchTracker.currentAction = 'end';
       this.touchTracker.distance = this.distanceBetweenPoints();
       this.touchTracker.angle = this.angleBetweenPoints();
+      this.touchTracker.distanceInt = this.touchTracker.distance.toFixed(0);
+      this.touchTracker.angleInt = this.touchTracker.angle.toFixed(0);
     },
     distanceBetweenPoints: function() {
       return Math.sqrt( ((this.touchTracker.lastX - this.touchTracker.startX) * (this.touchTracker.lastX - this.touchTracker.startX)) + ((this.touchTracker.lastY - this.touchTracker.startY) * (this.touchTracker.lastY - this.touchTracker.startY)) );
