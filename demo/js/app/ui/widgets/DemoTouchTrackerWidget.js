@@ -8,16 +8,22 @@ define(function(require) {
     TouchTrackerWidget.apply(this, arguments);
   }, {
 
-    onTouchStart: function() {
+    onTouchStart: function(e) {
+      e.stopPropagation();
+      e.preventDefault();
       TouchTrackerWidget.prototype.onTouchStart.apply(this, arguments);
       this.clearResults();
       this.printResults();
     },
-    onTouchMove: function() {
+    onTouchMove: function(e) {
+      e.stopPropagation();
+      e.preventDefault();
       TouchTrackerWidget.prototype.onTouchMove.apply(this, arguments);
       this.printResults();
     },
     onTouchEnd: function(e) {
+      e.stopPropagation();
+      e.preventDefault();
       TouchTrackerWidget.prototype.onTouchEnd.apply(this, arguments);
       this.printResults();
     },

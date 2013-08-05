@@ -10,6 +10,8 @@ or
 
 Add `src/DrawerWidget.js` and `src/TouchTrackerWidget.js` to your project for a handy drawer navigation.
 
+View the demo [http://daviddulak.github.io/lavaca-touch-helper](http://daviddulak.github.io/lavaca-touch-helper)
+
 ##Run Demo
 The demo requires node and grunt
 

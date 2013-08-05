@@ -14,6 +14,17 @@
     text-transform: uppercase;
     font-size: 24px;
 
+    .link {
+      display: block;
+      text-transform: none;
+      font-size: 17px;
+      padding-bottom: 7px;
+      span {
+        text-transform: uppercase;
+        font-size: 24px;
+      }
+    }
+
     .toggle-button {
       position: absolute;
       top: 10px;
@@ -55,11 +66,34 @@
   }
   #drawer {
     background: @lavacaBlue;
-    text-align: left;
-    text-indent: 15px;
   }
   #main-view {
     background: @lavacaGold;
+  }
+
+  .view-interior[data-position="left"] #main-view .toggle-button {
+    top: 10px;
+    left: 10px;
+    right: auto;
+    bottom: auto;
+  }
+  .view-interior[data-position="right"] #main-view .toggle-button {
+    top: 10px;
+    left: auto;
+    right: 10px;
+    bottom: auto;
+  }
+  .view-interior[data-position="bottom"] #main-view .toggle-button {
+    top: auto;
+    left: 10px;
+    right: auto;
+    bottom: 10px;
+  }
+  .view-interior[data-position="top"] #main-view .toggle-button {
+    top: 10px;
+    left: 10px;
+    right: auto;
+    bottom: auto;
   }
 
 }
