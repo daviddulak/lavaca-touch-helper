@@ -1,14 +1,27 @@
 define(function(require) {
 
   var Widget = require('lavaca/ui/Widget');
-
+  /**
+   * TouchTracker Base Widget. This widget is intended to be extended 
+   * for handling different touch interactions.
+   * @class app.ui.widgets.TouchTrackerWidget
+   * @extends lavaca.ui.Widget
+   * @constructor
+   *
+   */
   var TouchTrackerWidget = Widget.extend(function() {
     Widget.apply(this, arguments);
     this.el.on('touchstart', this.onTouchStart.bind(this));
     this.el.on('touchmove', this.onTouchMove.bind(this));
     this.el.on('touchend', this.onTouchEnd.bind(this));
   }, {
-
+    /**
+     * An Object to contain touch data
+     * @property touchTracker
+     * @type Object
+     * @default {}
+     *
+     */
     touchTracker: {},
 
     onTouchStart: function(e) {
@@ -51,6 +64,13 @@ define(function(require) {
         theta += 2 * Math.PI;
       }
       return theta * (180 / Math.PI);
+    },
+
+    dispose: function() {
+      this.el.off('touchstart');
+      this.el.off('touchmove');
+      this.el.off('touchend');
+      Widget.prototype.dispose.apply(this, arguments);
     }
 
   });

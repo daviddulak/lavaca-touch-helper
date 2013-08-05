@@ -4,26 +4,79 @@ define(function(require) {
   var Promise = require('lavaca/util/Promise');
   require('lavaca/fx/Transition');
 
-  var DrawerWidget = TouchTrackerWidget.extend(function() {
+  var DrawerWidget = TouchTrackerWidget.extend(function(el, params) {
     TouchTrackerWidget.apply(this, arguments);
-    this.initWithParams();
+
+    this.screenWidth = $(window).width();
+    this.screenHeight = $(window).height();
+
+    switch(params) {
+      case 'left':
+        params = {
+          axisTracking: 'x',
+          startDirection: 1,
+          moveDistance: this.screenWidth - this.restrictDragArea,
+          dragAreaLimit: this.screenWidth
+        }
+        break;
+      case 'right':
+        params = {
+          axisTracking: 'x',
+          startDirection: -1,
+          moveDistance: this.screenWidth - this.restrictDragArea,
+          dragAreaLimit: this.screenWidth
+        }
+        break;
+      case 'top':
+        params = {
+          axisTracking: 'y',
+          startDirection: 1,
+          moveDistance: this.screenHeight - this.restrictDragArea,
+          dragAreaLimit: this.screenHeight
+        }
+        break;
+      case 'bottom':
+        params = {
+          axisTracking: 'y',
+          startDirection: -1,
+          moveDistance: this.screenHeight - this.restrictDragArea,
+          dragAreaLimit: this.screenHeight
+        }
+        break;
+    }
+
+    this.initWithParams(params);
+    this.init();
   }, {
 
     initWithParams: function(params) {
       params = params || {};
-      this.axisTracking = params.axisTracking || 'x';
-      this.completionSpeed = params.completionSpeed || 0.1;
-      this.startDirection = params.startDirection || 1;
-      this.startPosition = params.startPosition || 0;
-      this.moveDistance = params.moveDistance || 215;
-      this.throwThreshold = params.throwThreshold || 20;
-      this.movementThreshold = params.movementThreshold || 6;
-      this.movementCallback = params.movementCallback || function(){return;};
+      this.axisTracking = params.axisTracking || this.axisTracking;
+      this.completionSpeed = params.completionSpeed || this.completionSpeed;
+      this.startDirection = params.startDirection || this.startDirection;
+      this.startPosition = params.startPosition || this.startPosition;
+      this.moveDistance = params.moveDistance || this.moveDistance;
+      this.throwThreshold = params.throwThreshold || this.throwThreshold;
+      this.movementThreshold = params.movementThreshold || this.movementThreshold;
+      this.movementCallback = params.movementCallback || this.movementCallback;
 
-      this.restrictDragArea = params.restrictDragArea || 44;
-      this.dragAreaLimit = params.dragAreaLimit || 320;
-      this.dragAreaY = params.dragAreaY || 320;
+      this.restrictDragArea = params.restrictDragArea || this.restrictDragArea;
+      this.dragAreaLimit = params.dragAreaLimit || this.dragAreaLimit;
+    },
 
+    axisTracking: 'x',
+    completionSpeed: 0.1,
+    startDirection: 1,
+    startPosition: 0,
+    moveDistance: 256,
+    throwThreshold: 20,
+    movementThreshold: 6,
+    movementCallback: function(){return;},
+    restrictDragArea: 64,
+    dragAreaLimit: 320,
+
+
+    init: function() {
       this.moveThreshold = this.moveDistance / 2;
       this.limitDirection = this.startDirection;
       this.limitMovementStart = this.startPosition;
@@ -41,7 +94,7 @@ define(function(require) {
 
       if (this.restrictDragArea) {
         if ((this.limitDirection === 1 && this.axisTracking === 'x' && this.touchTracker.startX > this.restrictDragArea) ||
-            (this.limitDirection === -1 && this.axisTracking === 'x' && this.touchTracker.startX < (this.restrictDragArea - this.dragAreaLimit)) || 
+            (this.limitDirection === -1 && this.axisTracking === 'x' && this.touchTracker.startX < (this.dragAreaLimit - this.restrictDragArea)) || 
             (this.limitDirection === 1 && this.axisTracking === 'y' && this.touchTracker.startY > this.restrictDragArea) ||
             (this.limitDirection === -1 && this.axisTracking === 'y' && this.touchTracker.startY < (this.restrictDragArea - this.dragAreaLimit))) {
           this.ignoreTouch = true;
@@ -188,8 +241,9 @@ define(function(require) {
     },
 
     updateCss: function (value) {
-      var newValue = 1 - (value * (0.2/215));
-      this.el.css('-webkit-transform', 'translate3d('+value+'px,0,0) scale3d('+newValue+','+newValue+','+newValue+')');
+      var newValue = 1 - (Math.abs(value) * (0.2/215));
+      var translateValue = this.axisTracking === 'x' ? value+'px,0,0' : '0,'+value+'px,0';
+      this.el.css('-webkit-transform', 'translate3d('+translateValue+')');
     },
     updateTransitionSpeed: function (value) {
       this.el.css('-webkit-transition','all '+value+'s ease-out');
