@@ -1,8 +1,9 @@
 require.config({
   baseUrl: 'js',
   paths: {
-    '$': '../bower_components/jquery/jquery.min',
-    'jquery': '../bower_components/jquery/jquery.min',
+    'es5-shim': 'libs/es5-shim',
+    '$': 'libs/jquery-2.0.0',
+    'jquery': 'libs/jquery-2.0.0',
     'jquery-mobile': '../bower_components/jquery-mobile/js',
     'cordova': 'libs/cordova',
     'mout': '../bower_components/mout/src',
