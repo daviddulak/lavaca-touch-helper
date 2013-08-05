@@ -1,0 +1,13 @@
+{
+  "name": "dustjs-linkedin",
+  "homepage": "https://github.com/linkedin/dustjs",
+  "version": "2.0.0",
+  "_release": "2.0.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.0.0",
+    "commit": "006771a1acf7eb472702a56f96530bc0547f8c2a"
+  },
+  "_source": "git://github.com/linkedin/dustjs.git",
+  "_target": "~2.0.x"
+}
