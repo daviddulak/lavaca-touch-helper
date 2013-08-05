@@ -9,8 +9,7 @@ require.config({
     'dust': '../../bower_components/dustjs-linkedin/dist/dust-full-1.1.1',
     'dust-helpers': '../../bower_components/dustjs-linkedin-helpers/dist/dust-helpers-1.1.1',
     'rdust': 'libs/require-dust',
-    'lavaca': 'Lavaca',
-    'Lavaca': 'lavaca'
+    'lavaca': 'lavaca'
   },
   shim: {
     $: {
