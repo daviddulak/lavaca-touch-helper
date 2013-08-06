@@ -3,6 +3,7 @@ define(function(require) {
   var $ = require('jquery');
   var TouchTrackerWidget = require('app/ui/widgets/TouchTrackerWidget');
   var Promise = require('lavaca/util/Promise');
+  var merge = require('mout/object/merge');
   require('lavaca/fx/Transition');
 
   /**
@@ -30,69 +31,8 @@ define(function(require) {
    */
   var DrawerWidget = TouchTrackerWidget.extend(function(el, params) {
     TouchTrackerWidget.apply(this, arguments);
-
-    this.screenWidth = $(window).width();
-    this.screenHeight = $(window).height();
-
-    switch(params) {
-      case 'left':
-        params = {
-          axisTracking: 'x',
-          startDirection: 1,
-          moveDistance: this.screenWidth - this.restrictDragArea,
-          dragAreaLimit: this.screenWidth
-        }
-        break;
-      case 'right':
-        params = {
-          axisTracking: 'x',
-          startDirection: -1,
-          moveDistance: this.screenWidth - this.restrictDragArea,
-          dragAreaLimit: this.screenWidth
-        }
-        break;
-      case 'top':
-        params = {
-          axisTracking: 'y',
-          startDirection: 1,
-          moveDistance: this.screenHeight - this.restrictDragArea,
-          dragAreaLimit: this.screenHeight
-        }
-        break;
-      case 'bottom':
-        params = {
-          axisTracking: 'y',
-          startDirection: -1,
-          moveDistance: this.screenHeight - this.restrictDragArea,
-          dragAreaLimit: this.screenHeight
-        }
-        break;
-    }
-
-    this.initWithParams(params);
-    this.init();
+    this.init(params);
   }, {
-
-    /**     
-     * Function sets the values needed to enable the Drawer
-     *
-     * @param {Object} params  An Object containing parameter values
-     * @method initWithParams
-     */
-    initWithParams: function(params) {
-      params = params || {};
-      this.axisTracking = params.axisTracking || this.axisTracking;
-      this.completionSpeed = params.completionSpeed || this.completionSpeed;
-      this.startDirection = params.startDirection || this.startDirection;
-      this.startPosition = params.startPosition || this.startPosition;
-      this.moveDistance = params.moveDistance || this.moveDistance;
-      this.throwThreshold = params.throwThreshold || this.throwThreshold;
-      this.movementThreshold = params.movementThreshold || this.movementThreshold;
-      this.movementCallback = params.movementCallback || this.movementCallback;
-
-      this.restrictDragArea = params.restrictDragArea || this.restrictDragArea;
-      this.dragAreaLimit = params.dragAreaLimit || this.dragAreaLimit;
-    },
 
     /**
      * Sets the axis in which the drawer moves. Accepted values are x or y.
@@ -202,8 +142,58 @@ define(function(require) {
      * Function sets a few defaults based on others.
      *
      * @method init
+     * @param {Object} params  An Object containing parameter values for the Drawer
      */
-    init: function() {
+     /**     
+     * Function sets a few defaults based on others.
+     *
+     * @method init
+     * @param {String} params  Sets up the Drawer for common positions. 
+     * Accepted value are 'top', 'left', 'right', 'bottom'.
+     */
+    init: function(params) {
+      this.screenWidth = $(window).width();
+      this.screenHeight = $(window).height();
+
+      switch(params) {
+        case 'left':
+          params = {
+            axisTracking: 'x',
+            startDirection: 1,
+            moveDistance: this.screenWidth - this.restrictDragArea,
+            dragAreaLimit: this.screenWidth
+          }
+          break;
+        case 'right':
+          params = {
+            axisTracking: 'x',
+            startDirection: -1,
+            moveDistance: this.screenWidth - this.restrictDragArea,
+            dragAreaLimit: this.screenWidth
+          }
+          break;
+        case 'top':
+          params = {
+            axisTracking: 'y',
+            startDirection: 1,
+            moveDistance: this.screenHeight - this.restrictDragArea,
+            dragAreaLimit: this.screenHeight
+          }
+          break;
+        case 'bottom':
+          params = {
+            axisTracking: 'y',
+            startDirection: -1,
+            moveDistance: this.screenHeight - this.restrictDragArea,
+            dragAreaLimit: this.screenHeight
+          }
+          break;
+      }
+
+      if (params) {
+        merge(this, params);
+      }
+
       this.moveThreshold = this.moveDistance / 2;
       this.limitDirection = this.startDirection;
       this.limitMovementStart = this.startPosition;

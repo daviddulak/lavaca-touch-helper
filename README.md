@@ -12,8 +12,24 @@ or
 Add `src/DrawerWidget.js` and `src/TouchTrackerWidget.js` to your project for a handy drawer navigation.
 
         var DrawerWidget = require('app/ui/widgets/DrawerWidget');
-        this.drawerWidget = new DrawerWidget('#main-view');
 
+        this.mapWidget({
+          '#has-drawer-widget': DrawerWidget
+        });
+
+        this.widgets.get('has-drawer-widget').toggle();
+
+By default the Drawer is a left drawer, but it is simple to customize
+
+        this.widgets.get('has-drawer-widget').init('right');
+        this.widgets.get('has-drawer-widget').init('top');
+        this.widgets.get('has-drawer-widget').init('bottom');
+        this.widgets.get('has-drawer-widget').init({
+          axisTracking: 'y',
+          startDirection: -1,
+          moveDistance: this.screenHeight - this.restrictDragArea,
+          dragAreaLimit: this.screenHeight
+        });
 
 ##Run Demo
 The demo requires node and grunt
