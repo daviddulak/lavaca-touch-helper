@@ -1,9 +1,33 @@
 define(function(require) {
 
+  var $ = require('jquery');
   var TouchTrackerWidget = require('app/ui/widgets/TouchTrackerWidget');
   var Promise = require('lavaca/util/Promise');
   require('lavaca/fx/Transition');
 
+  /**
+   * Drawer Widget creates touch tracking and promised based 
+   * toggling functions for creating ui Drawers.
+   *
+   * To build a Drawer with a custom animation, it is recommended to 
+   * extend this widget and overwrite updateCss and updateTransitionSpeed.
+   *
+   * @class app.ui.widgets.DrawerWidget
+   * @extends app.ui.widgets.TouchTrackerWidget
+   * @constructor
+   *
+   * @param {jQuery} el  The DOM element that is the root of the widget
+   * @param {Object} params  An Object containing parameter values for the Drawer
+   */
+  /**
+   * @class app.ui.widgets.DrawerWidget
+   * @extends app.ui.widgets.TouchTrackerWidget
+   * @constructor
+   *
+   * @param {jQuery} el  The DOM element that is the root of the widget
+   * @param {String} params  Sets up the Drawer for common positions. 
+   * Accepted value are 'top', 'left', 'right', 'bottom'.
+   */
   var DrawerWidget = TouchTrackerWidget.extend(function(el, params) {
     TouchTrackerWidget.apply(this, arguments);
 
@@ -49,6 +73,12 @@ define(function(require) {
     this.init();
   }, {
 
+    /**     
+     * Function sets the values needed to enable the Drawer
+     *
+     * @param {Object} params  An Object containing parameter values
+     * @method initWithParams
+     */
     initWithParams: function(params) {
       params = params || {};
       this.axisTracking = params.axisTracking || this.axisTracking;
@@ -64,27 +94,127 @@ define(function(require) {
       this.dragAreaLimit = params.dragAreaLimit || this.dragAreaLimit;
     },
 
+    /**
+     * Sets the axis in which the drawer moves. Accepted values are x or y.
+     *
+     * @property axisTracking
+     * @type String
+     * @default 'x'
+     */
     axisTracking: 'x',
+
+    /**
+     * Sets the speed in seconds for the animation after touchend.
+     *
+     * @property completionSpeed
+     * @type float
+     * @default 0.1
+     */
     completionSpeed: 0.1,
+
+    /**
+     * Sets the direction in which the drawer moves initially. Accepted values are 1 or -1.
+     *
+     * @property startDirection
+     * @type integer
+     * @default 1
+     */
     startDirection: 1,
+
+    /**
+     * Sets the initial position of the Drawer and should always start as 0.
+     *
+     * @property startPosition
+     * @type integer
+     * @default 0
+     */
     startPosition: 0,
+
+    /**
+     * Sets the distance in pixels that the drawer 
+     * will travel from start to finish.
+     *
+     * @property moveDistance
+     * @type integer
+     * @default 256
+     */
     moveDistance: 256,
+
+    /**
+     * Sets the distance in pixels between touch events 
+     * that will result in a completion animation.
+     *
+     * @property throwThreshold
+     * @type integer
+     * @default 20
+     */
     throwThreshold: 20,
+
+    /**
+     * Sets the distance in pixels in the opposite axis that the 
+     * touch can travel before being ignored.
+     *
+     * @property movementThreshold
+     * @type integer
+     * @default 6
+     */
     movementThreshold: 6,
-    movementCallback: function(){return;},
+
+    /**
+     * Sets the distance in pixels in which touchstart must begin or the 
+     * touch will be ignored.  If false, dragging can start from anywhere.
+     *
+     * @property restrictDragArea
+     * @type integer
+     * @default 64
+     */
     restrictDragArea: 64,
+
+    /**
+     * Sets the distance in pixels of the drawers container.
+     *
+     * @property dragAreaLimit
+     * @type integer
+     * @default 320
+     */
     dragAreaLimit: 320,
 
+    /**
+     * Sets whether the Widget is enabled or not.
+     *
+     * @property enabled
+     * @type boolean
+     * @default true
+     */
+    enabled: true,
 
+    /**
+     * Sets whether touches are ignored or not. This is used 
+     * to disable touches if the movementThreshold is reached.
+     *
+     * @property ignoreTouch
+     * @type boolean
+     * @default false
+     */
+    ignoreTouch: false,
+
+    /**     
+     * Function sets a few defaults based on others.
+     *
+     * @method init
+     */
     init: function() {
       this.moveThreshold = this.moveDistance / 2;
       this.limitDirection = this.startDirection;
       this.limitMovementStart = this.startPosition;
       this.limitMovementEnd = this.moveDistance * this.startDirection;
-      this.enable();
-      this.ignoreTouch = false;
     },
 
+    /**     
+     * Function extends the TouchTrackerWidget prototype function onTouchStart
+     *
+     * @method onTouchStart
+     */
     onTouchStart: function(e) {
       if (!this.enabled || this.ignoreTouch) {
         return;
@@ -107,6 +237,12 @@ define(function(require) {
       this.update(null, 0);
 
     },
+
+    /**     
+     * Function extends the TouchTrackerWidget prototype function onTouchMove
+     *
+     * @method onTouchMove
+     */
     onTouchMove: function(e) {
       if (!this.enabled || this.ignoreTouch) {
         return;
@@ -138,6 +274,12 @@ define(function(require) {
       }
 
     },
+
+    /**     
+     * Function extends the TouchTrackerWidget prototype function onTouchEnd
+     *
+     * @method onTouchEnd
+     */
     onTouchEnd: function(e) {
       if (!this.enabled || this.ignoreTouch) {
         this.ignoreTouch = false;
@@ -171,6 +313,12 @@ define(function(require) {
 
     },
 
+    /**     
+     * Function to animate to the open position
+     *
+     * @method open
+     * @return {Lavaca.util.Promise}  A promise
+     */
     open: function(){
       var promise = new Promise();
       this.ignoreTouch = true;
@@ -183,6 +331,12 @@ define(function(require) {
       return promise;
     },
 
+    /**     
+     * Function to animate to the close position
+     *
+     * @method close
+     * @return {Lavaca.util.Promise}  A promise
+     */
     close: function(){
       var promise = new Promise();
       this.ignoreTouch = true;
@@ -195,6 +349,13 @@ define(function(require) {
       return promise;
     },
 
+    /**     
+     * Function to animate to the open position or 
+     * close position based on the current state
+     *
+     * @method toggle
+     * @return {Lavaca.util.Promise}  A promise
+     */
     toggle: function () {
       var promise = new Promise();
       if(this.isOpen){
@@ -209,6 +370,11 @@ define(function(require) {
       return promise;
     },
 
+    /**     
+     * Function to revert the direction to the original after closing
+     *
+     * @method originalDirection
+     */
     originalDirection: function () {
       this.limitMovementStart = this.startPosition;
       this.limitMovementEnd = this.moveDistance * this.startDirection;
@@ -217,6 +383,11 @@ define(function(require) {
       this.isOpen = false;
     },
 
+    /**     
+     * Function to revert the direction to the reverse after opening
+     *
+     * @method reverseDirection
+     */
     reverseDirection: function () {
       this.limitMovementStart = this.moveDistance * this.startDirection;
       this.limitMovementEnd = this.startPosition;
@@ -225,6 +396,13 @@ define(function(require) {
       this.isOpen = true;
     },
 
+    /**     
+     * Function provides a single point for updating CSS and Transition Speed.
+     *
+     * @param {integer} value  Value representing the pixel position the Drawer.
+     * @param {float} value  Number of seconds for Drawer animation.
+     * @method enable
+     */
     update: function (value, speed) {
       function isNumber(n) {
         return !isNaN(parseFloat(n)) && isFinite(n);
@@ -235,23 +413,47 @@ define(function(require) {
       if (isNumber(speed)) {
         this.updateTransitionSpeed(speed);
       }
-      if (this.movementCallback) {
-        this.movementCallback.call(this, value, speed);
-      }
     },
 
+    /**     
+     * Function to update the position of the Drawer.
+     * To build a Drawer with a custom animation, it is recommended to 
+     * extend this widget and overwrite this function and the updateTransitionSpeed function.
+     *
+     * @param {integer} value  Value representing the pixel position the Drawer.
+     * @method enable
+     */
     updateCss: function (value) {
-      var newValue = 1 - (Math.abs(value) * (0.2/215));
       var translateValue = this.axisTracking === 'x' ? value+'px,0,0' : '0,'+value+'px,0';
       this.el.css('-webkit-transform', 'translate3d('+translateValue+')');
     },
+
+    /**     
+     * Function to update transition speed of the Drawer.
+     * To build a Drawer with a custom animation, it is recommended to 
+     * extend this widget and overwrite this function and the updateCss function.
+     *
+     * @param {float} value  Number of seconds for Drawer animation.
+     * @method enable
+     */
     updateTransitionSpeed: function (value) {
       this.el.css('-webkit-transition','all '+value+'s ease-out');
     },
 
+    /**     
+     * Function to set the Drawer Widget to enabled.
+     *
+     * @method enable
+     */
     enable: function() {
       this.enabled = true;
     },
+
+    /**     
+     * Function to set the Drawer Widget to disabled
+     *
+     * @method disable
+     */
     disable: function() {
       this.enabled = false;
     }

@@ -15,6 +15,8 @@ define(function(require) {
   }, {
     template: 'templates/example-drawer',
     className: 'example-drawer',
+    drawerPositions: ['top', 'right', 'bottom', 'left'],
+    currentPosition: 0,
     onEnterComplete: function() {
       this.drawerWidget = new DrawerWidget('#main-view', 'left');
       this.el.attr('data-position', 'left');
@@ -24,9 +26,14 @@ define(function(require) {
     },
 
     changeDrawer: function(e) {
-      var position = this.el.find(e.currentTarget).data('position');
+      this.currentPosition++;
+      var position = this.el.find(e.currentTarget).attr('data-position');
       this.el.find('.which-drawer').text(position);
       this.el.attr('data-position', position);
+
+      this.el.find('.next-drawer').text(this.drawerPositions[this.currentPosition % 4]);
+      this.el.find(e.currentTarget).attr('data-position', this.drawerPositions[this.currentPosition % 4]);
+
       this.drawerWidget.dispose();
       this.drawerWidget = new DrawerWidget('#main-view', position);
     }

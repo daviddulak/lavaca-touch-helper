@@ -17,13 +17,19 @@ define(function(require) {
   }, {
     /**
      * An Object to contain touch data
+     *
      * @property touchTracker
      * @type Object
      * @default {}
-     *
      */
     touchTracker: {},
 
+    /**
+     * Event handler for touchstart
+     * @method onTouchStart
+     *
+     * @param {Event} e  The change event
+     */
     onTouchStart: function(e) {
       this.touchTracker.currentAction = 'start';
       this.touchTracker.startX = e.originalEvent.touches[0].clientX;
@@ -35,6 +41,13 @@ define(function(require) {
       this.touchTracker.deltaX = 0;
       this.touchTracker.deltaY = 0;
     },
+
+    /**
+     * Event handler for touchmove
+     * @method onTouchMove
+     *
+     * @param {Event} e  The change event
+     */
     onTouchMove: function(e) {
       this.touchTracker.currentAction = 'move';
       this.touchTracker.currentDeltaX = e.originalEvent.touches[0].clientX - this.touchTracker.lastX;
@@ -48,6 +61,13 @@ define(function(require) {
       this.touchTracker.distanceInt = this.touchTracker.distance.toFixed(0);
       this.touchTracker.angleInt = this.touchTracker.angle.toFixed(0);
     },
+
+    /**
+     * Event handler for touchend
+     * @method onTouchEnd
+     *
+     * @param {Event} e  The change event
+     */
     onTouchEnd: function(e) {
       this.touchTracker.currentAction = 'end';
       this.touchTracker.distance = this.distanceBetweenPoints();
@@ -55,9 +75,21 @@ define(function(require) {
       this.touchTracker.distanceInt = this.touchTracker.distance.toFixed(0);
       this.touchTracker.angleInt = this.touchTracker.angle.toFixed(0);
     },
+
+    /**     
+     * Function calculates the distance between two points.
+     *
+     * @method distanceBetweenPoints
+     */
     distanceBetweenPoints: function() {
       return Math.sqrt( ((this.touchTracker.lastX - this.touchTracker.startX) * (this.touchTracker.lastX - this.touchTracker.startX)) + ((this.touchTracker.lastY - this.touchTracker.startY) * (this.touchTracker.lastY - this.touchTracker.startY)) );
     },
+
+    /**     
+     * Function calculates the angle between one point and another.
+     *
+     * @method angleBetweenPoints
+     */
     angleBetweenPoints: function() {
       var theta = Math.atan2(-(this.touchTracker.lastY - this.touchTracker.startY), (this.touchTracker.lastX - this.touchTracker.startX));
       if (theta < 0) {
@@ -66,6 +98,11 @@ define(function(require) {
       return theta * (180 / Math.PI);
     },
 
+    /**     
+     * Function extends dispose to unbind it's touch events.
+     *
+     * @method dispose
+     */
     dispose: function() {
       this.el.off('touchstart');
       this.el.off('touchmove');
