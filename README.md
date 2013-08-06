@@ -18,6 +18,12 @@ Add `src/DrawerWidget.js` and `src/TouchTrackerWidget.js` to your project for a 
         });
 
         this.widgets.get('has-drawer-widget').toggle();
+        
+        this.widgets.get('has-drawer-widget').open();
+        this.widgets.get('has-drawer-widget').close();
+
+        this.widgets.get('has-drawer-widget').disable();
+        this.widgets.get('has-drawer-widget').enable();
 
 By default the Drawer is a left drawer, but it is simple to customize
 
