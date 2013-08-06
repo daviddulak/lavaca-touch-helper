@@ -4,6 +4,14 @@ define(function(require) {
   var Promise = require('lavaca/util/Promise');
   require('lavaca/fx/Transition');
 
+  /**
+   * Drawer Widget creates touch tracking and promised based 
+   * toggling functions for creating ui Drawers
+   * @class app.ui.widgets.DrawerWidget
+   * @extends app.ui.widgets.TouchTrackerWidget
+   * @constructor
+   *
+   */
   var DrawerWidget = TouchTrackerWidget.extend(function(el, params) {
     TouchTrackerWidget.apply(this, arguments);
 
@@ -64,15 +72,84 @@ define(function(require) {
       this.dragAreaLimit = params.dragAreaLimit || this.dragAreaLimit;
     },
 
+    /**
+     * Sets the axis in which the drawer moves. Accepted values are x or y.
+     * @property axisTracking
+     * @type String
+     * @default 'x'
+     */
     axisTracking: 'x',
+
+    /**
+     * Sets the speed in seconds for the animation after touchend.
+     * @property completionSpeed
+     * @type float
+     * @default 0.1
+     */
     completionSpeed: 0.1,
+
+    /**
+     * Sets the direction in which the drawer moves initially. Accepted values are 1 or -1.
+     * @property startDirection
+     * @type integer
+     * @default 1
+     */
     startDirection: 1,
+
+    /**
+     * Sets the initial position of the Drawer and should always start as 0.
+     * @property startPosition
+     * @type integer
+     * @default 0
+     */
     startPosition: 0,
+
+    /**
+     * Sets the distance in pixels that the drawer will travel from start to finish.
+     * @property moveDistance
+     * @type integer
+     * @default 256
+     */
     moveDistance: 256,
+
+    /**
+     * Sets the distance in pixels between touch events that will result in a completion animation.
+     * @property throwThreshold
+     * @type integer
+     * @default 20
+     */
     throwThreshold: 20,
+
+    /**
+     * Sets the distance in pixels in the opposite axis that the touch can travel before being ignored.
+     * @property movementThreshold
+     * @type integer
+     * @default 6
+     */
     movementThreshold: 6,
+
+    /**
+     * Sets the distance in pixels that the drawer will travel
+     * @property moveDistance
+     * @type integer
+     * @default 256
+     */
     movementCallback: function(){return;},
+
+    /**
+     * Sets the distance in pixels in which touchstart must begin or the touch will be ignored.  If false
+     * @property restrictDragArea
+     * @type integer
+     * @default 64
+     */
     restrictDragArea: 64,
+
+    /**
+     * Sets the distance in pixels that the drawer will travel
+     * @property moveDistance
+     * @type integer
+     * @default 256
+     */
     dragAreaLimit: 320,
 
 
