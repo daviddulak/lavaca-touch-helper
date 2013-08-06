@@ -156,14 +156,6 @@ define(function(require) {
       this.screenHeight = $(window).height();
 
       switch(params) {
-        case 'left':
-          params = {
-            axisTracking: 'x',
-            startDirection: 1,
-            moveDistance: this.screenWidth - this.restrictDragArea,
-            dragAreaLimit: this.screenWidth
-          }
-          break;
         case 'right':
           params = {
             axisTracking: 'x',
@@ -186,6 +178,14 @@ define(function(require) {
             startDirection: -1,
             moveDistance: this.screenHeight - this.restrictDragArea,
             dragAreaLimit: this.screenHeight
+          }
+          break;
+        default:
+          params = {
+            axisTracking: 'x',
+            startDirection: 1,
+            moveDistance: this.screenWidth - this.restrictDragArea,
+            dragAreaLimit: this.screenWidth
           }
           break;
       }

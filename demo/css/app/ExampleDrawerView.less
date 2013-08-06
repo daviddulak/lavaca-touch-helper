@@ -7,27 +7,31 @@
     right: 0;
     bottom: 0;
     left: 0;
-    padding: 40% 15px 0 15px;
+    padding: 100px 15px 0 15px;
     color: #fff;
     text-align: center;
     font-family: 'OpenSans-CondLight';
     text-transform: uppercase;
-    font-size: 24px;
+    font-size: 22px;
 
     .which-drawer {
-      font-size: 34px;
+      font-size: 32px;
     }
 
 
-
+    p {
+      margin: 0 0 25px 0;
+    }
     .link {
-      display: block;
+      display: inline-block;
       text-transform: none;
-      font-size: 16px;
-      padding-bottom: 15px;
+      font-size: 15px;
+      padding: 9px 25px;
+      background: rgba(0,0,0,0.1);
+      border-radius: 99px;
       span {
         text-transform: uppercase;
-        font-size: 24px;
+        font-size: 20px;
       }
     }
 
@@ -72,34 +76,76 @@
   }
   #drawer {
     background: @lavacaBlue;
+    padding-top: 136px;
   }
   #main-view {
     background: @lavacaGold;
   }
 
-  .view-interior[data-position="left"] #main-view .toggle-button {
-    top: 10px;
-    left: 10px;
-    right: auto;
-    bottom: auto;
+  .content-wrapper {
+    display: block;
+    position: relative;
+    .arrow {
+      box-sizing: content-box;
+      display: block;
+      width: 0;
+      height: 0;
+      border: 20px solid #fff;
+      border-top-color: transparent;
+      border-left-color: transparent;
+      border-bottom-color: transparent;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin: -20px 0 0 -30px;
+      .transform(translate3d(-130px,0,0) rotate(0deg));
+      .transition(all 0.3s ease-out);
+    }
   }
-  .view-interior[data-position="right"] #main-view .toggle-button {
-    top: 10px;
-    left: auto;
-    right: 10px;
-    bottom: auto;
+
+  .view-interior[data-position="left"] #main-view {
+    .toggle-button {
+      top: 10px;
+      left: 10px;
+      right: auto;
+      bottom: auto;
+    }
+    .content-wrapper .arrow {
+      .transform(translate3d(-130px,0,0) rotate(0deg));
+    }
   }
-  .view-interior[data-position="bottom"] #main-view .toggle-button {
-    top: auto;
-    left: 10px;
-    right: auto;
-    bottom: 10px;
+  .view-interior[data-position="right"] #main-view {
+    .toggle-button {
+      top: 10px;
+      left: auto;
+      right: 10px;
+      bottom: auto;
+    }
+    .content-wrapper .arrow {
+      .transform(translate3d(150px,0,0) rotate(180deg));
+    }
   }
-  .view-interior[data-position="top"] #main-view .toggle-button {
-    top: 10px;
-    left: 10px;
-    right: auto;
-    bottom: auto;
+  .view-interior[data-position="bottom"] #main-view {
+    .toggle-button {
+      top: auto;
+      left: 10px;
+      right: auto;
+      bottom: 10px;
+    }
+    .content-wrapper .arrow {
+      .transform(translate3d(10px,100px,0) rotate(270deg));
+    }
+  }
+  .view-interior[data-position="top"] #main-view {
+    .toggle-button {
+      top: 10px;
+      left: 10px;
+      right: auto;
+      bottom: auto;
+    }
+    .content-wrapper .arrow {
+      .transform(translate3d(10px,-90px,0) rotate(90deg));
+    }
   }
 
 }

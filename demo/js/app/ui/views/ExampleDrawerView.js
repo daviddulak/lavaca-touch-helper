@@ -24,6 +24,8 @@ define(function(require) {
     },
 
     changeDrawer: function(e) {
+      e.preventDefault();
+      e.stopPropagation();
       this.currentPosition++;
       var position = this.el.find(e.currentTarget).attr('data-position');
       this.el.find('.which-drawer').text(position);
