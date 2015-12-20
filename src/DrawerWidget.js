@@ -2,8 +2,9 @@ define(function(require) {
 
   var $ = require('jquery');
   var TouchTrackerWidget = require('app/ui/widgets/TouchTrackerWidget');
-  var Promise = require('lavaca/util/Promise');
   var merge = require('mout/object/merge');
+  var Transition = require('lavaca/fx/Transition');
+  var Transform = require('lavaca/fx/Transform');
   require('lavaca/fx/Transition');
 
   /**
@@ -29,10 +30,19 @@ define(function(require) {
    * @param {String} params  Sets up the Drawer for common positions. 
    * Accepted value are 'top', 'left', 'right', 'bottom'.
    */
-  var DrawerWidget = TouchTrackerWidget.extend(function(el, params) {
+  var DrawerWidget = TouchTrackerWidget.extend(function DrawerWidget(el, params) {
     TouchTrackerWidget.apply(this, arguments);
     this.init(params);
   }, {
+
+    /**
+     * Determines if the drawer is busy
+     *
+     * @property isBusy
+     * @type Boolean
+     * @default false
+     */
+    isBusy: false,
 
     /**
      * Sets the axis in which the drawer moves. Accepted values are x or y.
@@ -155,6 +165,10 @@ define(function(require) {
       this.screenWidth = $(window).width();
       this.screenHeight = $(window).height();
 
+      if (!params) {
+        params = 'left';
+      }
+
       switch(params) {
         case 'right':
           params = {
@@ -162,7 +176,7 @@ define(function(require) {
             startDirection: -1,
             moveDistance: this.screenWidth - this.restrictDragArea,
             dragAreaLimit: this.screenWidth
-          }
+          };
           break;
         case 'top':
           params = {
@@ -170,7 +184,7 @@ define(function(require) {
             startDirection: 1,
             moveDistance: this.screenHeight - this.restrictDragArea,
             dragAreaLimit: this.screenHeight
-          }
+          };
           break;
         case 'bottom':
           params = {
@@ -178,15 +192,15 @@ define(function(require) {
             startDirection: -1,
             moveDistance: this.screenHeight - this.restrictDragArea,
             dragAreaLimit: this.screenHeight
-          }
+          };
           break;
-        default:
+        case 'left':
           params = {
             axisTracking: 'x',
             startDirection: 1,
             moveDistance: this.screenWidth - this.restrictDragArea,
             dragAreaLimit: this.screenWidth
-          }
+          };
           break;
       }
 
@@ -206,6 +220,7 @@ define(function(require) {
      * @method onTouchStart
      */
     onTouchStart: function(e) {
+
       if (!this.enabled || this.ignoreTouch) {
         return;
       }
@@ -240,26 +255,39 @@ define(function(require) {
 
       TouchTrackerWidget.prototype.onTouchMove.apply(this, arguments);
 
-      if(!this.touchTracker.hasDirection) {
-        if ((this.axisTracking === 'x') && (Math.abs(this.touchTracker.currentDeltaY) <= this.movementThreshold)  || 
-              ((this.axisTracking === 'y') && (Math.abs(this.touchTracker.currentDeltaX) <= this.movementThreshold))) {
-          this.touchTracker.isActive = true;
-        }
-        this.touchTracker.hasDirection = true;
-      }
-
       if (this.axisTracking === 'y') {
         this.touchTracker.moveTo = this.touchTracker.deltaY + this.limitMovementStart;
       } else {
         this.touchTracker.moveTo = this.touchTracker.deltaX + this.limitMovementStart;
       }
 
+      if(!this.touchTracker.hasDirection) {
+        if ((this.axisTracking === 'x') && (Math.abs(this.touchTracker.currentDeltaY) <= this.movementThreshold)  || 
+              ((this.axisTracking === 'y') && (Math.abs(this.touchTracker.currentDeltaX) <= this.movementThreshold))) {
+          this.touchTracker.isActive = true;
+        }
+        this.touchTracker.hasDirection = true;
+
+        if (this.touchTracker.isActive) {
+          if (((this.axisTracking === 'x') && (this.touchTracker.deltaX > this.limitMovementStart)) ||
+             ((this.axisTracking === 'y') && (this.touchTracker.deltaY > this.limitMovementStart))) {
+            this.trigger('openstart');
+          } else {
+            this.trigger('closestart');
+          }
+        }
+      }
+
       if (this.touchTracker.isActive) {
+        this.isBusy = true;
         if (((this.limitDirection === 1 && this.touchTracker.moveTo > this.limitMovementStart) ||
               (this.limitDirection === -1 && this.touchTracker.moveTo < this.limitMovementStart))) {
+          if (Math.abs(this.touchTracker.moveTo) > this.moveDistance) {
+            this.touchTracker.moveTo = (this.moveDistance -1) * this.limitDirection;
+          }
           this.update(this.touchTracker.moveTo);
         }
-        e.stopPropagation();
+        //e.stopPropagation();
         e.preventDefault();
       }
 
@@ -271,6 +299,7 @@ define(function(require) {
      * @method onTouchEnd
      */
     onTouchEnd: function(e) {
+
       if (!this.enabled || this.ignoreTouch) {
         this.ignoreTouch = false;
         return;
@@ -289,13 +318,21 @@ define(function(require) {
 
       this.update(null, this.completionSpeed);
       if (this.touchTracker.isActive) {
-        e.stopPropagation();
+        //e.stopPropagation();
         e.preventDefault();
         if (isThresholdReached) {
+          this.completing = true;
           this.toggle();
         } else {
           this.update(this.limitMovementStart);
+          this.el.nextTransitionEnd(function () {
+            this.trigger(this.limitMovementStart === this.startPosition ? 'closecomplete' : 'opencomplete');
+            this.isBusy = false;
+          }.bind(this));
         }
+      } else {
+        this.trigger(this.limitMovementStart === this.startPosition ? 'closecomplete' : 'opencomplete');
+        this.isBusy = false;
       }
 
       this.touchTracker.isActive = false;
@@ -310,14 +347,19 @@ define(function(require) {
      * @return {Lavaca.util.Promise}  A promise
      */
     open: function(){
-      var promise = new Promise();
+      this.trigger('openstart');
+      this.reasureDirection();
+      var promise = new $.Deferred();
       this.ignoreTouch = true;
       this.el.nextTransitionEnd(function () {
+        this.trigger(this.limitMovementStart === this.startPosition ? 'opencomplete' : 'closecomplete');
         this.reverseDirection();
         this.ignoreTouch = false;
+        this.completing = false;
+        this.isBusy = false;
         promise.resolve();
       }.bind(this));
-      this.update(this.limitMovementEnd, this.completionSpeed * 2);
+      this.update(this.limitMovementEnd, this.completing ? this.completionSpeed : (this.completionSpeed * 2));
       return promise;
     },
 
@@ -328,14 +370,19 @@ define(function(require) {
      * @return {Lavaca.util.Promise}  A promise
      */
     close: function(){
-      var promise = new Promise();
+      this.trigger('closestart');
+      this.reasureDirection();
+      var promise = new $.Deferred();
       this.ignoreTouch = true;
       this.el.nextTransitionEnd(function () {
+        this.trigger(this.limitMovementStart === this.startPosition ? 'opencomplete' : 'closecomplete');
         this.originalDirection();
         this.ignoreTouch = false;
+        this.completing = false;
+        this.isBusy = false;
         promise.resolve();
       }.bind(this));
-      this.update(this.limitMovementEnd, this.completionSpeed * 2);
+      this.update(this.limitMovementEnd, this.completing ? this.completionSpeed : (this.completionSpeed * 2));
       return promise;
     },
 
@@ -347,7 +394,8 @@ define(function(require) {
      * @return {Lavaca.util.Promise}  A promise
      */
     toggle: function () {
-      var promise = new Promise();
+      this.reasureDirection();
+      var promise = new $.Deferred();
       if(this.isOpen){
         this.close().then(function(){
           promise.resolve();
@@ -358,6 +406,29 @@ define(function(require) {
         });
       }
       return promise;
+    },
+
+    /**     
+     * Function to check if the menu is open
+     * This can be overwritten if the animation produces different results
+     *
+     * @method isOpenTest
+     */
+    isOpenTest: function() {
+      return $('#nav').offset().left === 0;
+    },
+
+    /**     
+     * Function to double check that the direction is correct
+     *
+     * @method reasureDirection
+     */
+    reasureDirection: function() {
+      if (this.isOpenTest()) {
+        this.reverseDirection();
+      } else {
+        this.originalDirection();
+      }
     },
 
     /**     
@@ -415,7 +486,7 @@ define(function(require) {
      */
     updateCss: function (value) {
       var translateValue = this.axisTracking === 'x' ? value+'px,0,0' : '0,'+value+'px,0';
-      this.el.css('-webkit-transform', 'translate3d('+translateValue+')');
+      this.el.css(Transform.cssProperty(), 'translate3d('+translateValue+')');
     },
 
     /**     
@@ -427,7 +498,7 @@ define(function(require) {
      * @method enable
      */
     updateTransitionSpeed: function (value) {
-      this.el.css('-webkit-transition','all '+value+'s ease-out');
+      this.el.css(Transition.cssProperty(),'all '+value+'s ease-out');
     },
 
     /**     
